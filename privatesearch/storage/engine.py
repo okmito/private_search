@@ -34,6 +34,19 @@ def _build_engine() -> Engine:
     connect_args: dict[str, object] = {}
     if url.startswith("sqlite"):
         connect_args["check_same_thread"] = False
+        # SQLAlchemy accepts forms ``sqlite:///relative/path`` and
+        # ``sqlite:////absolute/path``. Strip the scheme and normalise the
+        # leading slashes so we can detect whether we have an absolute path.
+        stripped = url[len("sqlite:///") :]
+        if stripped.startswith("/"):
+            path = "/" + stripped.lstrip("/")
+        else:
+            path = stripped
+        if path and path != ":memory:":
+            from pathlib import Path
+
+            db_file = Path(path)
+            db_file.parent.mkdir(parents=True, exist_ok=True)
     engine = create_engine(url, future=True, connect_args=connect_args)
     if url.startswith("sqlite"):
         _configure_sqlite(engine)
