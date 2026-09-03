@@ -1,0 +1,11 @@
+"""SQLAlchemy declarative base for PrivateSearch."""
+
+from __future__ import annotations
+
+from sqlalchemy.orm import DeclarativeBase
+
+
+class Base(DeclarativeBase):
+    """Single declarative base used by every model."""
+
+    pass
