@@ -1,0 +1,259 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "privatesearch"
+version = "0.1.0"
+description = "Open-source, self-hostable, privacy-first search engine"
+readme = "README.md"
+license = {file = "LICENSE"}
+authors = [
+    {name = "PrivateSearch Contributors", email = "contributors@privatesearch.example.com"}
+]
+maintainers = [
+    {name = "PrivateSearch Maintainers", email = "maintainers@privatesearch.example.com"}
+]
+keywords = ["search", "search-engine", "information-retrieval", "crawler", "bm25", "privacy"]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn[standard]>=0.27.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.0",
+    "pgvector>=0.2.0",
+    "httpx>=0.26.0",
+    "beautifulsoup4>=4.12.0",
+    "lxml>=5.1.0",
+    "robotexclusionrulesparser>=0.1.0",
+    "python-magic>=0.4.27",
+    "structlog>=24.1.0",
+    "python-json-logger>=2.0.0",
+    "prometheus-client>=0.19.0",
+    "tenacity>=8.2.0",
+    "pydantic-extra-types>=2.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "pytest-benchmark>=4.0.0",
+    "ruff>=0.3.0",
+    "mypy>=1.8.0",
+    "pre-commit>=3.6.0",
+    "types-requests>=2.31.0",
+    "types-beautifulsoup4>=4.12.0",
+]
+crawler = [
+    "aiohttp>=3.9.0",
+    "aiofiles>=23.2.0",
+    "redis>=5.0.0",
+]
+ai = [
+    "llama-cpp-python>=0.2.0",
+    "sentence-transformers>=2.5.0",
+    "torch>=2.2.0",
+]
+all = [
+    "privatesearch[crawler,ai,dev]",
+]
+
+[project.urls]
+Homepage = "https://github.com/privatesearch/privatesearch"
+Repository = "https://github.com/privatesearch/privatesearch"
+Issues = "https://github.com/privatesearch/privatesearch/issues"
+Documentation = "https://privatesearch.readthedocs.io"
+Changelog = "https://github.com/privatesearch/privatesearch/blob/main/CHANGELOG.md"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["privatesearch*", "apps*"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+indent-width = 4
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "T20", # flake8-print
+    "SIM", # flake8-simplify
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "ERA", # eradicate
+    "PL",  # pylint
+    "TRY", # tryceratops
+]
+ignore = [
+    "S101", # assert in tests
+    "ARG001", # unused function argument (common in FastAPI)
+    "ARG002", # unused method argument
+]
+per-file-ignores = [
+    "tests/* = [\"S101\", \"ARG001\", \"ARG002\", \"PT004\", \"PT006\", \"PT007\", \"PT009\", \"PT011\", \"PT012\", \"PT013\", \"PT014\", \"PT015\", \"PT016\", \"PT017\", \"PT018\", \"PT019\"]",
+]
+exclude = [
+    ".git",
+    ".venv",
+    "venv",
+    "__pycache__",
+    "build",
+    "dist",
+    ".eggs",
+    "*.egg-info",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "htmlcov",
+    "node_modules",
+    ".next",
+    "apps/web/node_modules",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+docstring-code-format = true
+
+[tool.ruff.lint.isort]
+known-first-party = ["privatesearch"]
+"import-headings.standard-library" = "STDLIB"
+"import-headings.third-party" = "THIRD_PARTY"
+"import-headings.first-party" = "FIRST_PARTY"
+combine-as-imports = true
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+strict_optional = true
+ignore_missing_imports = false
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+plugins = [
+    "pydantic.mypy",
+    "sqlalchemy.mypy",
+]
+[[tool.mypy.overrides]]
+module = [
+    "tests.*",
+]
+disallow_untyped_defs = false
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = [
+    "alembic.*",
+    "sqlalchemy.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+    "--cov=privatesearch",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow tests",
+    "benchmark: Benchmark tests",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["privatesearch", "apps"]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+    "*/conftest.py",
+]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.alembic]
+script_location = "migrations"
+file_template = "%%Y%%m%%d_%%H%%M%%S_%%(rev)s_%%(slug)s"
+
+[tool.pre-commit]
+repos = [
+    {repo = "https://github.com/astral-sh/ruff-pre-commit", rev = "v0.3.0", hooks = [
+        {id = "ruff", args = ["--fix", "--exit-non-zero-on-fix"]},
+        {id = "ruff-format", args = ["--check"]},
+    ]},
+    {repo = "https://github.com/pre-commit/pre-commit-hooks", rev = "v4.5.0", hooks = [
+        {id = "check-yaml"},
+        {id = "check-toml"},
+        {id = "check-json"},
+        {id = "check-merge-conflict"},
+        {id = "end-of-file-fixer"},
+        {id = "trailing-whitespace"},
+        {id = "check-added-large-files"},
+    ]},
+    {repo = "https://github.com/pre-commit/mirrors-mypy", rev = "v1.8.0", hooks = [
+        {id = "mypy", additional_dependencies = ["pydantic", "sqlalchemy", "fastapi"]},
+    ]},
+]
+
+[tool.bumpversion]
+current_version = "0.1.0"
+commit = true
+tag = true
+tag_name = "v{new_version}"
+
+[tool.pip-audit]
+requirements = "requirements.txt"
+desc = "on"
+skip = []

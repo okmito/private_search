@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: privatesearch-postgres
+    environment:
+      POSTGRES_DB: privatesearch
+      POSTGRES_USER: privatesearch
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./infrastructure/docker/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U privatesearch -d privatesearch"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api
+    container_name: privatesearch-api
+    environment:
+      DATABASE_URL: postgresql+asyncpg://privatesearch:${POSTGRES_PASSWORD:-changeme}@postgres:5432/privatesearch
+      SECRET_KEY: ${SECRET_KEY:-dev-secret-change-in-production}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
+      CRAWLER_ALLOWED_DOMAINS: ${CRAWLER_ALLOWED_DOMAINS:-}
+      CRAWLER_MAX_DEPTH: ${CRAWLER_MAX_DEPTH:-2}
+      CRAWLER_MAX_PAGES: ${CRAWLER_MAX_PAGES:-100}
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./packages:/app/packages
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  crawler:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.crawler
+    container_name: privatesearch-crawler
+    environment:
+      DATABASE_URL: postgresql+asyncpg://privatesearch:${POSTGRES_PASSWORD:-changeme}@postgres:5432/privatesearch
+      SEED_URLS: ${SEED_URLS:-https://example.com}
+      CRAWLER_ALLOWED_DOMAINS: ${CRAWLER_ALLOWED_DOMAINS:-example.com}
+      CRAWLER_MAX_DEPTH: ${CRAWLER_MAX_DEPTH:-2}
+      CRAWLER_MAX_PAGES: ${CRAWLER_MAX_PAGES:-100}
+      CRAWLER_DELAY: ${CRAWLER_DELAY:-1.0}
+      CRAWLER_TIMEOUT: ${CRAWLER_TIMEOUT:-30}
+      CRAWLER_USER_AGENT: ${CRAWLER_USER_AGENT:-PrivateSearch/0.1 (+https://github.com/privatesearch/privatesearch)}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./apps/crawler:/app/apps/crawler
+      - ./packages:/app/packages
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+    container_name: privatesearch-frontend
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next
+    command: npm run dev
+
+volumes:
+  postgres_data:
+
+networks:
+  default:
+    name: privatesearch-network
