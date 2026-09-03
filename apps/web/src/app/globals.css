@@ -1,0 +1,251 @@
+:root {
+  --bg: #ffffff;
+  --fg: #1f2937;
+  --fg-muted: #4b5563;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #e5e7eb;
+  --card: #f9fafb;
+  --mark-bg: #fde68a;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f172a;
+    --fg: #f1f5f9;
+    --fg-muted: #94a3b8;
+    --accent: #60a5fa;
+    --accent-hover: #93c5fd;
+    --border: #1e293b;
+    --card: #111827;
+    --mark-bg: #b45309;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-header .logo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.app-header nav a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  margin-left: 1rem;
+}
+
+.app-main {
+  flex: 1;
+  padding: 2rem 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.app-footer {
+  border-top: 1px solid var(--border);
+  padding: 1rem 1.5rem;
+  text-align: center;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.search-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.search-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.search-form input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--fg);
+}
+
+.search-form input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.search-form button {
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.75rem;
+  border: none;
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.search-form button:hover {
+  background: var(--accent-hover);
+}
+
+.search-form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.suggestions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.suggestion {
+  background: var(--card);
+  color: var(--fg-muted);
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 0.25rem 0.75rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.suggestion:hover {
+  color: var(--accent);
+}
+
+.results-summary {
+  color: var(--fg-muted);
+  font-size: 0.9rem;
+}
+
+.result-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.result-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.result-title:hover {
+  text-decoration: underline;
+}
+
+.result-url {
+  margin: 0.25rem 0;
+  color: var(--fg-muted);
+  font-size: 0.85rem;
+}
+
+.result-snippet {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.result-snippet mark {
+  background: var(--mark-bg);
+  color: inherit;
+  padding: 0 0.15rem;
+  border-radius: 0.15rem;
+}
+
+.result-explanation {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--fg-muted);
+}
+
+.result-explanation summary {
+  cursor: pointer;
+}
+
+.result-explanation ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1rem;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--fg-muted);
+  padding: 4rem 1rem;
+}
+
+.empty-state h2 {
+  color: var(--fg);
+}
+
+.error,
+.status {
+  text-align: center;
+  color: var(--fg-muted);
+}
+
+.error {
+  color: #b91c1c;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.pagination button {
+  background: var(--card);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
