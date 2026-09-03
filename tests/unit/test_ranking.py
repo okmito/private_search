@@ -149,3 +149,31 @@ def test_signal_score_serialization() -> None:
         assert isinstance(key, str)
         assert isinstance(value, float)
         assert math.isfinite(value)
+
+
+def test_explanation_keys_match_signal_names() -> None:
+    """Explainable ranking must expose the same signals that contributed to the final score."""
+
+    config = RankingConfig(
+        bm25_weight=1.0,
+        title_weight=2.0,
+        url_weight=0.5,
+        freshness_weight=0.0,
+        quality_weight=1.5,
+        enable_title=True,
+        enable_url=True,
+        enable_freshness=False,
+        enable_quality=True,
+    )
+    pipeline = RankingPipeline(config=config)
+    hits = pipeline.rank("machine learning", index=_build_index(), limit=3)
+    assert hits
+    top = hits[0]
+    explanation = top.explanation()
+    # Disabled signals should not appear in the explanation.
+    assert "freshness" not in explanation
+    assert "title" in explanation
+    assert "url" in explanation
+    assert "quality" in explanation
+    assert "bm25" in explanation
+    assert "final" in explanation

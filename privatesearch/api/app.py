@@ -17,12 +17,15 @@ from privatesearch.api.dependencies import get_holder, get_search_service
 from privatesearch.api.schemas import (
     DocumentDetail,
     HealthResponse,
+    HybridSearchResponse,
     IndexStats,
     SearchHit,
     SearchResponse,
     SuggestionResponse,
 )
 from privatesearch.common.config import get_settings
+from privatesearch.embeddings.tfidf import TFIDFEmbedding
+from privatesearch.retrieval.hybrid import HybridConfig, HybridSearch
 from privatesearch.retrieval.retriever import Retriever
 from privatesearch.retrieval.snippets import build_snippet
 from privatesearch.storage import repository as repo
@@ -220,6 +223,68 @@ def _register_routes(app: FastAPI) -> None:
     ) -> SuggestionResponse:
         candidates = _suggest_terms(q, limit=limit)
         return SuggestionResponse(query=q, suggestions=candidates)
+
+    @app.get("/api/v1/search/hybrid", response_model=HybridSearchResponse, tags=["search"])
+    def hybrid_search(
+        q: str = Query(..., min_length=1),
+        page: int = Query(1, ge=1),
+        limit: int = Query(
+            get_settings().api_default_page_size,
+            ge=1,
+            le=get_settings().api_max_page_size,
+        ),
+    ) -> HybridSearchResponse:
+        q = q.strip()
+        if not q:
+            raise HTTPException(status_code=400, detail="Query must not be blank")
+        service = get_search_service()
+        embedding = TFIDFEmbedding()
+        try:
+            documents = [
+                (doc.doc_id, doc.url, doc.title, doc.body or doc.title)
+                for doc in service.pipeline.index.all_documents()
+            ]
+            hybrid = HybridSearch(
+                service.index,
+                embedding,
+                config=HybridConfig(bm25_weight=1.0, semantic_weight=1.0),
+            )
+            hybrid.fit(documents)
+            offset = (page - 1) * limit
+            hits = hybrid.search(q, limit=limit, offset=offset)
+        except Exception:  # noqa: BLE001
+            logger.exception("Hybrid search failed")
+            raise HTTPException(status_code=500, detail="Hybrid search failed")
+        payload: list[HybridSearchHit] = []
+        for hit in hits:
+            doc_field = service.index.document(hit.doc_id)
+            body = doc_field.title if doc_field else ""
+            snippet = build_snippet(
+                body,
+                query_terms=list(hit.matched_terms),
+                tokenizer=service.index.tokenizer,
+                max_length=240,
+            )
+            payload.append(
+                HybridSearchHit(
+                    doc_id=hit.doc_id,
+                    score=hit.final_score,
+                    title=doc_field.title if doc_field else "",
+                    url=doc_field.url if doc_field else "",
+                    snippet=snippet.text,
+                    highlighted=snippet.highlighted,
+                    matched_terms=list(hit.matched_terms),
+                    explanation=hit.explanation(),
+                )
+            )
+        return HybridSearchResponse(
+            query=q,
+            total=len(payload),
+            page=page,
+            page_size=limit,
+            method="hybrid(tfidf)",
+            results=payload,
+        )
 
     @app.get("/api/v1/documents/{doc_id}", response_model=DocumentDetail, tags=["documents"])
     def get_document(doc_id: int) -> DocumentDetail:

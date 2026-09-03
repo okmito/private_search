@@ -61,3 +61,23 @@ class HealthResponse(BaseModel):
     version: str
     documents: int
     terms: int
+
+
+class HybridSearchHit(BaseModel):
+    doc_id: int
+    score: float
+    title: str
+    url: str
+    snippet: str
+    highlighted: str
+    matched_terms: list[str] = Field(default_factory=list)
+    explanation: dict[str, float] = Field(default_factory=dict)
+
+
+class HybridSearchResponse(BaseModel):
+    query: str
+    total: int
+    page: int
+    page_size: int
+    method: str
+    results: list[HybridSearchHit]
