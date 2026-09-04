@@ -10,7 +10,7 @@ from privatesearch.crawler.crawler import CrawledPage, CrawlResult
 from privatesearch.document_processing.hashing import content_hash
 from privatesearch.indexing.inverted_index import InvertedIndex
 from privatesearch.storage import repository as repo
-from privatesearch.storage.engine import session_scope
+from privatesearch.storage.engine import init_database, session_scope
 
 __all__ = [
     "IndexingResult",
@@ -38,11 +38,18 @@ class IndexingPipeline:
         self.index = index or InvertedIndex()
 
     def index_pages(self, pages: Iterable[CrawledPage]) -> IndexingResult:
+        # Ensure the database schema exists before touching the repository.
+        init_database()
         result = IndexingResult()
         for page in pages:
             try:
                 self._index_one(page, result)
-            except Exception:  # noqa: BLE001 - never let a single page abort the pipeline
+            except Exception as exc:  # noqa: BLE001 - never let a single page abort the pipeline
+                import logging
+
+                logging.getLogger(__name__).exception(
+                    "Failed to index page %s: %s", page.url, exc
+                )
                 result.failed += 1
         return result
 

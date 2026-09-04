@@ -29,18 +29,11 @@ services:
       SECRET_KEY: ${SECRET_KEY:-dev-secret-change-in-production}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
-      CRAWLER_ALLOWED_DOMAINS: ${CRAWLER_ALLOWED_DOMAINS:-}
-      CRAWLER_MAX_DEPTH: ${CRAWLER_MAX_DEPTH:-2}
-      CRAWLER_MAX_PAGES: ${CRAWLER_MAX_PAGES:-100}
     ports:
       - "8000:8000"
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./apps/api:/app/apps/api
-      - ./packages:/app/packages
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   crawler:
     build:
@@ -59,9 +52,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    volumes:
-      - ./apps/crawler:/app/apps/crawler
-      - ./packages:/app/packages
     deploy:
       resources:
         limits:
@@ -80,11 +70,6 @@ services:
       - "3000:3000"
     depends_on:
       - api
-    volumes:
-      - ./apps/web:/app/apps/web
-      - /app/apps/web/node_modules
-      - /app/apps/web/.next
-    command: npm run dev
 
 volumes:
   postgres_data:

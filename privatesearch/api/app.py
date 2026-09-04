@@ -17,6 +17,7 @@ from privatesearch.api.dependencies import get_holder, get_search_service
 from privatesearch.api.schemas import (
     DocumentDetail,
     HealthResponse,
+    HybridSearchHit,
     HybridSearchResponse,
     IndexStats,
     SearchHit,
@@ -238,18 +239,20 @@ def _register_routes(app: FastAPI) -> None:
         if not q:
             raise HTTPException(status_code=400, detail="Query must not be blank")
         service = get_search_service()
+        # Load documents from storage to feed the embedding model.
+        with session_scope() as session:
+            stored_docs = [
+                (doc.doc_id, doc.url, doc.title, doc.body or "")
+                for doc in repo.all_documents(session)
+            ]
         embedding = TFIDFEmbedding()
         try:
-            documents = [
-                (doc.doc_id, doc.url, doc.title, doc.body or doc.title)
-                for doc in service.pipeline.index.all_documents()
-            ]
             hybrid = HybridSearch(
                 service.index,
                 embedding,
                 config=HybridConfig(bm25_weight=1.0, semantic_weight=1.0),
             )
-            hybrid.fit(documents)
+            hybrid.fit(stored_docs)
             offset = (page - 1) * limit
             hits = hybrid.search(q, limit=limit, offset=offset)
         except Exception:  # noqa: BLE001
