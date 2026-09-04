@@ -12,9 +12,7 @@ PrivateSearch is a search engine you run yourself — crawler, inverted index, B
 
 Built as a portfolio project to show information retrieval done properly, not proxied.
 
-<p align="center">
-  <img src="docs/assets/hero.svg" alt="PrivateSearch hero — desk with index cards" width="100%">
-</p>
+![PrivateSearch hero — desk with index cards](docs/assets/hero.svg)
 
 ---
 
@@ -31,15 +29,15 @@ You → Your machine → Your PostgreSQL/SQLite → Your inverted index → Your
 
 ### Demo
 
-<p align="center">
-  <img src="docs/assets/search-ui.svg" alt="PrivateSearch search UI mock" width="100%">
-</p>
+![PrivateSearch search UI](docs/assets/search-ui.svg)
 
 **Try it in 30 seconds:**
 
 ```bash
-pip install -e ".[dev]" && python scripts/seed_demo.py
-python -m uvicorn apps.api.main:app --port 8000 &
+pip install -e ".[dev]"
+python scripts/seed_demo.py              # seed demo index
+python -m uvicorn apps.api.main:app --port 8000
+# new terminal:
 # http://localhost:3000 → search "youtube" → 3 hits (YouTube Creator Guide on top)
 # http://localhost:8000/api/v1/search?q=machine%20learning → BM25 + title boost
 ```
@@ -50,9 +48,7 @@ python -m uvicorn apps.api.main:app --port 8000 &
 | `machine learning` | Deep Learning Foundations | BM25 length-normalized |
 | `cooking` | Cooking Pasta | exact title match |
 
-<p align="center"><i>Screenshot: editorial index cards, vermillion accent, Fraunces headings — prints like a library catalog, not a Google clone. Dark/light via prefers-color-scheme.</i><br>
-<img src="docs/assets/search.png" alt="PrivateSearch UI" width="750" onerror="this.style.display='none'"><br>
-<sub>Run <code>cd apps/web && npm run dev</code> → <code>http://localhost:3000</code></sub></p>
+<sub>Run <code>cd apps/web</code> then <code>npm run dev</code> → <code>http://localhost:3000</code> (Windows: use <code>;</code> not <code>&&</code> in PowerShell)</sub>
 
 ---
 
@@ -96,9 +92,7 @@ Web ──► Crawler (httpx, Frontier, RobotsPolicy) ──► HTML Processor
 
 See `docs/architecture/overview.md` for data flow, persistence and security boundary.
 
-<p align="center">
-  <img src="docs/assets/architecture.svg" alt="PrivateSearch architecture" width="100%">
-</p>
+![PrivateSearch architecture](docs/assets/architecture.svg)
 
 ---
 
@@ -115,14 +109,17 @@ docker compose up --build   # api:8000 health, web:3000, postgres:5432
 
 **.env** — copy `.env.example`. `DATABASE_URL=sqlite:///./data/privatesearch.sqlite` works without Postgres; `postgresql+asyncpg://privatesearch:changeme@postgres:5432/privatesearch` in Docker.
 
-**Local (no Docker):**
+**Local (no Docker, Windows-friendly):**
 
 ```bash
 pip install -e ".[dev]"
 python scripts/seed_demo.py              # 20 demo docs → youtube/machine/cooking work immediately
 python -m apps.crawler --seed-urls https://example.com --max-pages 5 --delay 0.0 --print-stats
 python -m uvicorn apps.api.main:app --reload   # http://localhost:8000/api/v1/health
-cd apps/web && npm ci && npm run dev          # http://localhost:3000
+# frontend (new terminal):
+cd apps/web
+npm ci
+npm run dev                              # http://localhost:3000
 ```
 
 Rebuild after crawling:
