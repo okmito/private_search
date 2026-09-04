@@ -23,5 +23,5 @@
 </g>
 <defs><marker id="a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#1A1816"/></marker></defs>
 <text x="28" y="300" font-family="Newsreader, Georgia, serif" font-size="11" fill="#3A3632">Privacy: no query leaves your machine — crawler only fetches your seed URLs. No Google/Bing, no analytics.</text>
-<text x="28" y="322" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="0.6" fill="#8D857B">RUN: docker compose up --build  ·  OR  python scripts/seed_demo.py && python -m uvicorn apps.api.main:app</text>
+<text x="28" y="322" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="0.6" fill="#8D857B">RUN: docker compose up --build  ·  OR  python scripts/seed_demo.py &amp;&amp; python -m uvicorn apps.api.main:app</text>
 </svg>
