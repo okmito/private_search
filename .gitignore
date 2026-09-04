@@ -236,3 +236,7 @@ temp/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Internal docs (not part of public repo)
+AGENTS.md
+PrivateSearch_SPEC.md

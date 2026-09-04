@@ -101,7 +101,6 @@ Before submitting:
 - Update README.md for user-facing changes
 - Update docs/ for architecture/design changes
 - Add docstrings for new public APIs
-- Keep AGENTS.md current with process changes
 
 ## Security
 
