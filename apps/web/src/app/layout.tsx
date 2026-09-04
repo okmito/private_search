@@ -26,7 +26,7 @@ export default function RootLayout({
               <span className="logo-tag">self-hosted / no. 008</span>
             </a>
             <nav className="header-nav">
-              <a href="https://github.com/privatesearch/privatesearch" target="_blank" rel="noopener">
+              <a href="https://github.com/okmito/private_search" target="_blank" rel="noopener">
                 GitHub
               </a>
               <a href="/api/v1/health">API</a>
@@ -37,7 +37,7 @@ export default function RootLayout({
             <div className="footer-inner">
               <span>Set in Fraunces &amp; JetBrains Mono — Printed in the browser</span>
               <span>
-                <a href="https://github.com/privatesearch/privatesearch">Source</a> · Apache-2.0 · hand-set with care
+                <a href="https://github.com/okmito/private_search">Source</a> · Apache-2.0 · hand-set with care
               </span>
             </div>
           </footer>

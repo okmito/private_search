@@ -18,7 +18,7 @@ By participating in this project, you agree to abide by our Code of Conduct. Ple
 ### Getting Started
 
 1. Fork the repository
-2. Clone your fork: `git clone https://github.com/yourusername/privatesearch.git`
+2. Clone your fork: `git clone https://github.com/okmito/private_search.git`
 3. Create a feature branch: `git checkout -b feature/your-feature-name`
 4. Set up the development environment (see README.md)
 5. Make your changes

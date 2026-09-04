@@ -76,11 +76,11 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/privatesearch/privatesearch"
-Repository = "https://github.com/privatesearch/privatesearch"
-Issues = "https://github.com/privatesearch/privatesearch/issues"
-Documentation = "https://privatesearch.readthedocs.io"
-Changelog = "https://github.com/privatesearch/privatesearch/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/okmito/private_search"
+Repository = "https://github.com/okmito/private_search"
+Issues = "https://github.com/okmito/private_search/issues"
+Documentation = "https://github.com/okmito/private_search#readme"
+Changelog = "https://github.com/okmito/private_search/blob/main/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["."]
