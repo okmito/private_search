@@ -17,8 +17,11 @@ function hostOf(url: string): string {
 }
 
 function safeHighlight(html: string): string {
-  // Strip any non-whitelisted HTML to avoid XSS from the backend.
   return html.replace(/<(?!\/?mark\b)[^>]*>/g, "");
+}
+
+function faviconLetter(host: string): string {
+  return host.charAt(0).toUpperCase() || "•";
 }
 
 export default function ResultList({ results, query }: ResultListProps) {
@@ -31,6 +34,7 @@ export default function ResultList({ results, query }: ResultListProps) {
   }
 
   const totalPages = Math.max(1, Math.ceil(data.total / data.page_size));
+
   const onPageChange = async (nextPage: number) => {
     try {
       const updated = await searchDocuments({ query, page: nextPage, limit: data.page_size });
@@ -47,20 +51,24 @@ export default function ResultList({ results, query }: ResultListProps) {
       <div className="empty-state">
         <h2>No results for “{data.query}”</h2>
         <p>
-          Your index has {data.total === 0 ? "no matches" : `${data.total} total matches`} for this query.
-          PrivateSearch only searches pages you crawled/seeded (privacy).
+          PrivateSearch only searches pages you stored — your index has {data.total} matches for this query.
         </p>
-        <p>
-          Try:{" "}
+        <p>Try one of these:</p>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginTop: 8 }}>
           {quick.map((q) => (
-            <button key={q} type="button" className="suggestion" onClick={() => searchDocuments({ query: q, page: 1, limit: data.page_size }).then(setData).catch(() => {})} style={{ marginRight: 6 }}>
+            <button
+              key={q}
+              type="button"
+              className="suggestion"
+              onClick={() => searchDocuments({ query: q, page: 1, limit: data.page_size }).then(setData).catch(() => {})}
+            >
               {q}
             </button>
           ))}
-        </p>
-        <p style={{ fontSize: "0.85rem", color: "var(--fg-muted)" }}>
-          No hits at all? Run <code>python scripts/seed_demo.py</code> then{" "}
-          <code>curl http://localhost:8000/api/v1/index/rebuild</code> and search again.
+        </div>
+        <p style={{ marginTop: 14 }}>
+          Still empty? Run <code>python scripts/seed_demo.py</code> then{" "}
+          <code>curl http://localhost:8000/api/v1/index/rebuild</code>
         </p>
       </div>
     );
@@ -69,50 +77,50 @@ export default function ResultList({ results, query }: ResultListProps) {
   return (
     <section className="results">
       <p className="results-summary">
-        About {data.total.toLocaleString()} result{data.total === 1 ? "" : "s"}
+        {data.total.toLocaleString()} result{data.total === 1 ? "" : "s"} for “{data.query}” · page {data.page} of {totalPages}
       </p>
       <ol className="result-list">
-        {data.results.map((hit) => (
-          <li key={hit.doc_id} className="result">
-            <a href={hit.url} className="result-title" target="_blank" rel="noopener">
-              {hit.title || hit.url}
-            </a>
-            <p className="result-url">{hostOf(hit.url)}</p>
-            <p
-              className="result-snippet"
-              dangerouslySetInnerHTML={{ __html: safeHighlight(hit.highlighted || hit.snippet) }}
-            />
-            {hit.explanation && (
-              <details className="result-explanation">
-                <summary>Why this result?</summary>
-                <ul>
-                  {Object.entries(hit.explanation).map(([key, value]) => (
-                    <li key={key}>
-                      <span>{key}</span>: <strong>{Number(value).toFixed(3)}</strong>
-                    </li>
-                  ))}
-                </ul>
-              </details>
-            )}
-          </li>
-        ))}
+        {data.results.map((hit) => {
+          const host = hostOf(hit.url);
+          return (
+            <li key={hit.doc_id} className="result">
+              <div className="result-top">
+                <span className="result-favicon" aria-hidden>
+                  {faviconLetter(host)}
+                </span>
+                <p className="result-url">{host} · score {hit.score.toFixed(2)}</p>
+              </div>
+              <a href={hit.url} className="result-title" target="_blank" rel="noopener">
+                {hit.title || hit.url}
+              </a>
+              <p
+                className="result-snippet"
+                dangerouslySetInnerHTML={{ __html: safeHighlight(hit.highlighted || hit.snippet) }}
+              />
+              {hit.explanation && (
+                <details className="result-explanation">
+                  <summary>Why this result?</summary>
+                  <ul>
+                    {Object.entries(hit.explanation).map(([key, value]) => (
+                      <li key={key}>
+                        <span>{key}</span>: <strong>{Number(value).toFixed(3)}</strong>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </li>
+          );
+        })}
       </ol>
       <nav className="pagination" aria-label="Search pagination">
-        <button
-          type="button"
-          disabled={page <= 1}
-          onClick={() => onPageChange(page - 1)}
-        >
+        <button type="button" disabled={page <= 1} onClick={() => onPageChange(page - 1)}>
           ← Previous
         </button>
         <span>
           Page {page} of {totalPages}
         </span>
-        <button
-          type="button"
-          disabled={page >= totalPages}
-          onClick={() => onPageChange(page + 1)}
-        >
+        <button type="button" disabled={page >= totalPages} onClick={() => onPageChange(page + 1)}>
           Next →
         </button>
       </nav>

@@ -9,6 +9,19 @@ interface SearchPageProps {
   initialQuery?: string;
 }
 
+function SearchIcon() {
+  return (
+    <svg className="search-icon" viewBox="0 0 20 20" fill="none" aria-hidden>
+      <path
+        d="M14.5 14.5L17 17M15.5 9.5A6 6 0 113.5 9.5a6 6 0 0112 0z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export default function SearchPage({ initialQuery }: SearchPageProps) {
   const [query, setQuery] = useState<string>(initialQuery ?? "");
   const [results, setResults] = useState<SearchResponse | null>(null);
@@ -16,6 +29,7 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [stats, setStats] = useState<{ documents: number; terms: number } | null>(null);
+  const hasResults = results !== null;
 
   useEffect(() => {
     fetch("/api/v1/stats")
@@ -57,27 +71,52 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
   };
 
   return (
-    <div className="search-page">
-      {stats !== null && stats.documents < 5 && (
-        <p className="status" style={{ background: "var(--card)", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--border)" }}>
-          Index has {stats.documents} pages ({stats.terms} terms) — try <code>python scripts/seed_demo.py</code> then search <strong>youtube</strong> or <strong>machine learning</strong>.
+    <div className={`search-page ${hasResults ? "has-results" : ""}`}>
+      {!hasResults && (
+        <div className="hero">
+          <h1>
+            Search without <em>being followed.</em>
+          </h1>
+          <p>
+            Your queries stay on your machine. No ads, no tracking.
+            <br />
+            Self-hosted. Your index, your rules.
+          </p>
+        </div>
+      )}
+
+      {stats !== null && stats.documents < 5 && !hasResults && (
+        <p className="status" style={{ maxWidth: 640, margin: "0 auto", width: "100%" }}>
+          Index has {stats.documents} pages ({stats.terms} terms) — try <code>python scripts/seed_demo.py</code> then search{" "}
+          <strong>youtube</strong> or <strong>machine learning</strong>.
         </p>
       )}
+
       <form className="search-form" onSubmit={onSubmit} role="search">
+        <SearchIcon />
         <input
           type="search"
           name="q"
           autoComplete="off"
           spellCheck={false}
-          placeholder="Search the web without being tracked"
+          placeholder="Ask your index anything"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           aria-label="Search query"
         />
         <button type="submit" disabled={isPending || !query.trim()}>
-          {isPending ? "Searching…" : "Search"}
+          {isPending ? "Searching…" : "Search →"}
         </button>
       </form>
+
+      <div className="search-meta">
+        <span>{stats ? `${stats.documents} pages indexed` : "index ready"}</span>
+        <span className="sep">·</span>
+        <span>BM25 + hybrid</span>
+        <span className="sep">·</span>
+        <span>no tracking</span>
+      </div>
+
       {suggestions.length > 0 && (
         <div className="suggestions" aria-label="Suggestions">
           {suggestions.map((suggestion) => (
@@ -94,8 +133,11 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
       )}
       {error && <p className="error">Error: {error}</p>}
       {isPending && <p className="status">Searching…</p>}
-      {results && !isPending && (
-        <ResultList results={results} query={query} />
+      {results && !isPending && <ResultList results={results} query={query} />}
+      {!hasResults && !isPending && (
+        <p className="status" style={{ marginTop: 8 }}>
+          Try: youtube · machine learning · vector search · cooking
+        </p>
       )}
     </div>
   );
