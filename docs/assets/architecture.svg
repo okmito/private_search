@@ -1,0 +1,27 @@
+<svg width="1160" height="360" viewBox="0 0 1160 360" xmlns="http://www.w3.org/2000/svg" role="img">
+<title>PrivateSearch architecture — crawler to UI</title>
+<rect width="1160" height="360" rx="12" fill="#FDF8F0"/><rect x="0.5" y="0.5" width="1159" height="359" rx="12" fill="none" stroke="#E8DDD0"/>
+<!-- nodes -->
+<g font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="0.6">
+  <rect x="28" y="28" width="132" height="44" rx="4" fill="#1A1816"/><text x="94" y="46" text-anchor="middle" fill="#FDF8F0">WEB</text><text x="94" y="58" text-anchor="middle" fill="#8D857B" font-size="7">seed URLs</text>
+  <rect x="190" y="28" width="132" height="44" rx="4" fill="#FFFFFF" stroke="#1A1816"/><text x="256" y="46" text-anchor="middle" fill="#1A1816">CRAWLER</text><text x="256" y="58" text-anchor="middle" fill="#8D857B" font-size="7">httpx · frontier</text>
+  <rect x="352" y="28" width="132" height="44" rx="4" fill="#FFFFFF" stroke="#DDD1BE"/><text x="418" y="46" text-anchor="middle" fill="#1A1816">HTML</text><text x="418" y="58" text-anchor="middle" fill="#8D857B" font-size="7">BS4 · hashing</text>
+  <rect x="514" y="28" width="132" height="44" rx="4" fill="#FFFFFF" stroke="#DDD1BE"/><text x="580" y="46" text-anchor="middle" fill="#1A1816">STORE</text><text x="580" y="58" text-anchor="middle" fill="#8D857B" font-size="7">Postgres/SQLite</text>
+  <rect x="28" y="108" width="180" height="64" rx="4" fill="#FFFFFF" stroke="#E8DDD0"/><text x="118" y="130" text-anchor="middle" fill="#1A1816">INVERTED INDEX</text><text x="118" y="144" text-anchor="middle" fill="#8D857B" font-size="7">Posting(tf) · snapshot</text>
+  <rect x="238" y="108" width="180" height="64" rx="4" fill="#FFFFFF" stroke="#E8DDD0"/><text x="328" y="130" text-anchor="middle" fill="#1A1816">VECTOR STORE</text><text x="328" y="144" text-anchor="middle" fill="#8D857B" font-size="7">TF-IDF · cosine</text>
+  <rect x="448" y="108" width="180" height="64" rx="4" fill="#FFFFFF" stroke="#C9320A"/><text x="538" y="130" text-anchor="middle" fill="#1A1816">BM25 · HYBRID</text><text x="538" y="144" text-anchor="middle" fill="#8D857B" font-size="7">k1 / b · semantic</text>
+  <rect x="658" y="108" width="180" height="64" rx="4" fill="#F7EFE2" stroke="#E8DDD0"/><text x="748" y="130" text-anchor="middle" fill="#1A1816">RANKING</text><text x="748" y="144" text-anchor="middle" fill="#8D857B" font-size="7">title · url · quality</text>
+  <rect x="868" y="108" width="132" height="64" rx="4" fill="#1A1816"/><text x="934" y="130" text-anchor="middle" fill="#FDF8F0">SEARCH API</text><text x="934" y="144" text-anchor="middle" fill="#8D857B" font-size="7">FastAPI</text>
+  <rect x="868" y="210" width="132" height="44" rx="20" fill="#FFFFFF" stroke="#1A1816"/><text x="934" y="236" text-anchor="middle" fill="#1A1816">WEB UI</text>
+</g>
+<!-- arrows -->
+<g stroke="#1A1816" stroke-width="1.1" fill="none" marker-end="url(#a)">
+  <path d="M160 50 H190"/><path d="M322 50 H352"/><path d="M484 50 H514"/>
+  <path d="M580 72 V108"/><path d="M328 72 V108"/>
+  <path d="M208 140 H238"/><path d="M418 140 H448"/><path d="M628 140 H658"/><path d="M838 140 H868"/>
+  <path d="M934 172 V210"/>
+</g>
+<defs><marker id="a" viewBox="0 0 8 8" refX="6" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#1A1816"/></marker></defs>
+<text x="28" y="300" font-family="Newsreader, Georgia, serif" font-size="11" fill="#3A3632">Privacy: no query leaves your machine — crawler only fetches your seed URLs. No Google/Bing, no analytics.</text>
+<text x="28" y="322" font-family="JetBrains Mono, monospace" font-size="9" letter-spacing="0.6" fill="#8D857B">RUN: docker compose up --build  ·  OR  python scripts/seed_demo.py && python -m uvicorn apps.api.main:app</text>
+</svg>
