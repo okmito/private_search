@@ -13,9 +13,9 @@ function SearchIcon() {
   return (
     <svg className="search-icon" viewBox="0 0 20 20" fill="none" aria-hidden>
       <path
-        d="M14.5 14.5L17 17M15.5 9.5A6 6 0 113.5 9.5a6 6 0 0112 0z"
+        d="M13.2 13.2L17 17M14.5 9.2a5.2 5.2 0 11-10.4 0 5.2 5.2 0 0110.4 0z"
         stroke="currentColor"
-        strokeWidth="1.6"
+        strokeWidth="1.5"
         strokeLinecap="round"
       />
     </svg>
@@ -74,21 +74,21 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
     <div className={`search-page ${hasResults ? "has-results" : ""}`}>
       {!hasResults && (
         <div className="hero">
+          <p className="hero-kicker">EST. 2024 · PRIVATE INDEX</p>
           <h1>
             Search without <em>being followed.</em>
           </h1>
           <p>
-            Your queries stay on your machine. No ads, no tracking.
-            <br />
-            Self-hosted. Your index, your rules.
+            Your queries stay on <strong>your machine</strong>. No ads, no profile, no third party. Just the web you
+            chose to keep.
           </p>
         </div>
       )}
 
       {stats !== null && stats.documents < 5 && !hasResults && (
-        <p className="status" style={{ maxWidth: 640, margin: "0 auto", width: "100%" }}>
-          Index has {stats.documents} pages ({stats.terms} terms) — try <code>python scripts/seed_demo.py</code> then search{" "}
-          <strong>youtube</strong> or <strong>machine learning</strong>.
+        <p className="status">
+          Index has {stats.documents} pages · run <code>python scripts/seed_demo.py</code> then try{" "}
+          <strong>youtube</strong>
         </p>
       )}
 
@@ -99,21 +99,21 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
           name="q"
           autoComplete="off"
           spellCheck={false}
-          placeholder="Ask your index anything"
+          placeholder="Ask your index anything — try “youtube music”"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           aria-label="Search query"
         />
         <button type="submit" disabled={isPending || !query.trim()}>
-          {isPending ? "Searching…" : "Search →"}
+          {isPending ? "Searching…" : "Search"}
         </button>
       </form>
 
       <div className="search-meta">
-        <span>{stats ? `${stats.documents} pages indexed` : "index ready"}</span>
-        <span className="sep">·</span>
+        <span>{stats ? `${stats.documents} pages · ${stats.terms} terms` : "index ready"}</span>
+        <span className="sep">—</span>
         <span>BM25 + hybrid</span>
-        <span className="sep">·</span>
+        <span className="sep">—</span>
         <span>no tracking</span>
       </div>
 
@@ -135,8 +135,8 @@ export default function SearchPage({ initialQuery }: SearchPageProps) {
       {isPending && <p className="status">Searching…</p>}
       {results && !isPending && <ResultList results={results} query={query} />}
       {!hasResults && !isPending && (
-        <p className="status" style={{ marginTop: 8 }}>
-          Try: youtube · machine learning · vector search · cooking
+        <p className="status" style={{ marginTop: 4 }}>
+          Try: youtube · youtube music · machine learning · vector search
         </p>
       )}
     </div>
