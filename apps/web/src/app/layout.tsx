@@ -37,7 +37,7 @@ export default function RootLayout({
             <div className="footer-inner">
               <span>Set in Fraunces &amp; JetBrains Mono — Printed in the browser</span>
               <span>
-                <a href="https://github.com/okmito/private_search">Source</a> · Apache-2.0 · hand-set with care
+                <a href="https://github.com/okmito/private_search">Source</a> · Apache-2.0 · made with intent
               </span>
             </div>
           </footer>
