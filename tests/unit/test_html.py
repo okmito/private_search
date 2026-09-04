@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from privatesearch.document_processing.html import extract_document
 
-
 HTML = """
 <!DOCTYPE html>
 <html lang="en">

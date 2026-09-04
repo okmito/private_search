@@ -3,8 +3,8 @@
 from privatesearch.crawler.crawler import (
     CrawlConfig,
     CrawledPage,
-    CrawlResult,
     Crawler,
+    CrawlResult,
     CrawlStats,
 )
 from privatesearch.crawler.frontier import Frontier, FrontierEntry

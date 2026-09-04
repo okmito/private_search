@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from privatesearch.common.config import Settings, get_settings
-from privatesearch.indexing.inverted_index import InvertedIndex
 from privatesearch.indexing.pipeline import IndexingPipeline, SearchService
 from privatesearch.storage.engine import init_database
 

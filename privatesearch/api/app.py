@@ -5,9 +5,8 @@ from __future__ import annotations
 import logging
 import re
 import time
-from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -124,9 +123,7 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "Authorization"],
     )
     app.add_middleware(SecurityHeadersMiddleware)
-    app.add_middleware(
-        RateLimitMiddleware, requests_per_minute=settings.api_rate_limit_per_minute
-    )
+    app.add_middleware(RateLimitMiddleware, requests_per_minute=settings.api_rate_limit_per_minute)
 
     _register_routes(app)
     _register_exception_handlers(app)
@@ -176,9 +173,7 @@ def _register_routes(app: FastAPI) -> None:
         if len(q) > get_settings().api_max_query_length:
             raise HTTPException(status_code=400, detail="Query too long")
         service = get_search_service()
-        retriever = Retriever(
-            service.index, k1=get_settings().bm25_k1, b=get_settings().bm25_b
-        )
+        retriever = Retriever(service.index, k1=get_settings().bm25_k1, b=get_settings().bm25_b)
         offset = (page - 1) * limit
         results = retriever.search(q, limit=limit, offset=offset, documents=None)
         total = retriever.count(q)

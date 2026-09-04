@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from privatesearch.document_processing.tokenizer import Tokenizer, default_tokenizer
+from privatesearch.document_processing.tokenizer import Tokenizer
 from privatesearch.indexing.inverted_index import InvertedIndex
 
 __all__ = ["Snippet", "build_snippet"]
@@ -75,7 +75,9 @@ def build_snippet(
     window_text = text[start:end]
     lower_terms = sorted({term.lower() for term in query_terms if term})
     if not lower_terms:
-        return Snippet(text=snippet_text, highlighted=snippet_text, matched_positions=tuple(matched_positions))
+        return Snippet(
+            text=snippet_text, highlighted=snippet_text, matched_positions=tuple(matched_positions)
+        )
 
     # Replace occurrences of the matched terms inside the window text.
     highlighted_chunks: list[str] = []

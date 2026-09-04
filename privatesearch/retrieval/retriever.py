@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 from privatesearch.document_processing.tokenizer import Tokenizer, default_tokenizer
 from privatesearch.indexing.inverted_index import DocumentField, InvertedIndex

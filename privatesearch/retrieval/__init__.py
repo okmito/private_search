@@ -2,8 +2,8 @@
 
 from privatesearch.retrieval.bm25 import BM25, BM25Hit
 from privatesearch.retrieval.hybrid import HybridConfig, HybridHit, HybridSearch
-from privatesearch.retrieval.snippets import Snippet, build_snippet
 from privatesearch.retrieval.retriever import Retriever, SearchResult
+from privatesearch.retrieval.snippets import Snippet, build_snippet
 
 __all__ = [
     "BM25",

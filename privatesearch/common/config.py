@@ -8,8 +8,8 @@ from pathlib import Path
 from typing import Any
 
 try:
-    from pydantic_settings import BaseSettings, SettingsConfigDict
     from pydantic import Field
+    from pydantic_settings import BaseSettings, SettingsConfigDict
 except ImportError:  # pragma: no cover - fallback when pydantic-settings is missing
     from pydantic import BaseModel, Field
 

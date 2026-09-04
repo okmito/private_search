@@ -107,9 +107,7 @@ class BM25:
                 dl = self.index.document_length(posting.doc_id) or 1
                 tf = posting.term_frequency
                 numerator = tf * (self.k1 + 1)
-                denominator = tf + self.k1 * (
-                    1 - self.b + self.b * (dl / avg_dl)
-                )
+                denominator = tf + self.k1 * (1 - self.b + self.b * (dl / avg_dl))
                 contribution = idf * (numerator / denominator)
                 scores[posting.doc_id] = scores.get(posting.doc_id, 0.0) + contribution
                 matched.setdefault(posting.doc_id, set()).add(term)

@@ -2,12 +2,11 @@
 
 from __future__ import annotations
 
-from typing import Awaitable, Callable
+from collections.abc import Awaitable, Callable
 
 import pytest
 
 from privatesearch.crawler.crawler import CrawlConfig, Crawler
-from privatesearch.crawler.robots import RobotsPolicy
 
 pytestmark = pytest.mark.asyncio
 

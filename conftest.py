@@ -19,9 +19,7 @@ import os  # noqa: E402
 # Force a deterministic, isolated working directory for tests.
 TEST_DATA_DIR = ROOT / "data" / "test"
 TEST_DATA_DIR.mkdir(parents=True, exist_ok=True)
-os.environ.setdefault(
-    "DATABASE_URL", f"sqlite:///{(TEST_DATA_DIR / 'test.sqlite').as_posix()}"
-)
+os.environ.setdefault("DATABASE_URL", f"sqlite:///{(TEST_DATA_DIR / 'test.sqlite').as_posix()}")
 os.environ.setdefault("PRIVATESEARCH_INDEX_STORAGE_PATH", (TEST_DATA_DIR / "index").as_posix())
 os.environ.setdefault("PRIVATESEARCH_SNAPSHOT_DIR", (TEST_DATA_DIR / "snapshots").as_posix())
 os.environ.setdefault("PRIVATESEARCH_LOG_LEVEL", "WARNING")

@@ -16,12 +16,11 @@ import json
 import math
 import statistics
 import time
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Mapping, Sequence
 
 from privatesearch.indexing.inverted_index import InvertedIndex
-from privatesearch.indexing.pipeline import IndexingPipeline
 from privatesearch.ranking.pipeline import RankingConfig, RankingPipeline
 from privatesearch.retrieval.bm25 import BM25
 from privatesearch.retrieval.retriever import Retriever

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import heapq
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, field
-from typing import Iterable, Iterator
 
 __all__ = ["FrontierEntry", "Frontier"]
 

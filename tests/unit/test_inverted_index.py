@@ -83,9 +83,7 @@ def test_snapshot_round_trip(tmp_path: Path) -> None:
     reloaded = InvertedIndex.load_snapshot(snapshot_path)
     assert reloaded.stats.num_documents == original.stats.num_documents
     assert reloaded.stats.num_terms == original.stats.num_terms
-    assert reloaded.stats.avg_document_length == pytest.approx(
-        original.stats.avg_document_length
-    )
+    assert reloaded.stats.avg_document_length == pytest.approx(original.stats.avg_document_length)
 
     for term in original.terms():
         assert [p.doc_id for p in reloaded.get_postings(term)] == [

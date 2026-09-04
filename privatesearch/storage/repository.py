@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -12,9 +12,9 @@ from privatesearch.storage.engine import session_scope
 from privatesearch.storage.models import (
     CrawlEvent,
     CrawlJob,
-    Domain,
     Document,
     DocumentLink,
+    Domain,
     IndexMetadata,
 )
 
@@ -89,7 +89,7 @@ def add_document(
         select(Document).where(Document.canonical_url == canonical_url)
     ).scalar_one_or_none()
 
-    timestamp = last_crawled_at or dt.datetime.now(dt.timezone.utc)
+    timestamp = last_crawled_at or dt.datetime.now(dt.UTC)
     body_length = len(body)
     title_length = len(title)
 
@@ -131,9 +131,7 @@ def add_document(
     return document
 
 
-def _replace_links(
-    session: Session, document: Document, links: Iterable[tuple[str, str]]
-) -> None:
+def _replace_links(session: Session, document: Document, links: Iterable[tuple[str, str]]) -> None:
     session.query(DocumentLink).filter(DocumentLink.document_id == document.id).delete()
     seen: set[str] = set()
     for target_url, anchor_text in links:
@@ -155,13 +153,16 @@ def get_document_by_doc_id(session: Session, doc_id: int) -> Document | None:
 
 
 def get_document_by_url(session: Session, url: str) -> Document | None:
-    return session.execute(select(Document).where(Document.canonical_url == url)).scalar_one_or_none()
+    return session.execute(
+        select(Document).where(Document.canonical_url == url)
+    ).scalar_one_or_none()
 
 
 def document_exists_by_hash(session: Session, content_hash: str) -> bool:
-    return session.execute(
-        select(Document.id).where(Document.content_hash == content_hash)
-    ).first() is not None
+    return (
+        session.execute(select(Document.id).where(Document.content_hash == content_hash)).first()
+        is not None
+    )
 
 
 def all_documents(session: Session, *, limit: int | None = None) -> list[Document]:
@@ -209,7 +210,7 @@ def finish_crawl_job(
     job.pages_crawled = pages_crawled
     job.pages_failed = pages_failed
     job.status = status
-    job.finished_at = dt.datetime.now(dt.timezone.utc)
+    job.finished_at = dt.datetime.now(dt.UTC)
 
 
 def add_crawl_event(

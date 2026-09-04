@@ -2,14 +2,13 @@
 
 from __future__ import annotations
 
-import heapq
-from dataclasses import dataclass, field
-from typing import Iterable, Sequence
+from collections.abc import Iterable, Sequence
+from dataclasses import dataclass
 
 from privatesearch.embeddings.base import EmbeddingModel
 from privatesearch.embeddings.vector_store import InMemoryVectorStore, VectorHit
 from privatesearch.indexing.inverted_index import InvertedIndex
-from privatesearch.retrieval.bm25 import BM25, BM25Hit
+from privatesearch.retrieval.bm25 import BM25
 
 __all__ = ["HybridConfig", "HybridHit", "HybridSearch"]
 

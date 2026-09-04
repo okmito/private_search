@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import ipaddress
 import socket
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 from urllib.parse import ParseResult, parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 __all__ = [
@@ -48,8 +48,10 @@ class NormalizedUrl:
 
     @property
     def netloc(self) -> str:
-        if self.port and ((self.scheme == "http" and self.port != 80)
-                          or (self.scheme == "https" and self.port != 443)):
+        if self.port and (
+            (self.scheme == "http" and self.port != 80)
+            or (self.scheme == "https" and self.port != 443)
+        ):
             return f"{self.host}:{self.port}"
         return self.host
 
@@ -69,9 +71,7 @@ def _filter_query(query: str) -> str:
         return ""
     items = parse_qs(query, keep_blank_values=False)
     filtered = {
-        key: sorted(values)
-        for key, values in items.items()
-        if key.lower() not in _TRACKING_PARAMS
+        key: sorted(values) for key, values in items.items() if key.lower() not in _TRACKING_PARAMS
     }
     # ``urlencode`` with a sorted dict produces a deterministic ordering.
     sorted_items = sorted(filtered.items())
@@ -199,4 +199,6 @@ def same_site(a: str, b: str) -> bool:
 
     pa = urlparse(a)
     pb = urlparse(b)
-    return (pa.hostname or "").lower() == (pb.hostname or "").lower() and (pa.scheme or "").lower() == (pb.scheme or "").lower()
+    return (pa.hostname or "").lower() == (pb.hostname or "").lower() and (
+        pa.scheme or ""
+    ).lower() == (pb.scheme or "").lower()

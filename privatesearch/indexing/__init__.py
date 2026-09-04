@@ -1,11 +1,11 @@
 """In-memory inverted index used by PrivateSearch."""
 
 from privatesearch.indexing.inverted_index import (
+    IndexSnapshot,
+    IndexStats,
     InvertedIndex,
     Posting,
     PostingList,
-    IndexStats,
-    IndexSnapshot,
 )
 from privatesearch.indexing.pipeline import (
     IndexingPipeline,

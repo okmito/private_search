@@ -20,8 +20,8 @@ to plug it in once the data is available.
 from __future__ import annotations
 
 import math
+from collections.abc import Iterable, Sequence
 from dataclasses import dataclass, field
-from typing import Iterable, Mapping, Sequence
 
 from privatesearch.document_processing.tokenizer import Tokenizer, default_tokenizer
 from privatesearch.indexing.inverted_index import InvertedIndex
@@ -79,7 +79,7 @@ class RankingSignal:
         index: InvertedIndex,
         bm25_hit: BM25Hit,
         query_terms: Sequence[str],
-        config: "RankingConfig",
+        config: RankingConfig,
     ) -> SignalScore:
         raise NotImplementedError
 
@@ -110,11 +110,11 @@ class RankingConfig:
     enable_quality: bool = True
 
     @classmethod
-    def balanced(cls) -> "RankingConfig":
+    def balanced(cls) -> RankingConfig:
         return cls()
 
     @classmethod
-    def bm25_only(cls) -> "RankingConfig":
+    def bm25_only(cls) -> RankingConfig:
         config = cls()
         config.enable_title = False
         config.enable_url = False
@@ -143,7 +143,9 @@ class RankingPipeline:
     ) -> None:
         self.config = config or RankingConfig()
         self.tokenizer: Tokenizer = tokenizer or default_tokenizer()
-        self.signals: list[RankingSignal] = list(signals) if signals is not None else _default_signals(self.tokenizer)
+        self.signals: list[RankingSignal] = (
+            list(signals) if signals is not None else _default_signals(self.tokenizer)
+        )
 
     def rank(
         self,
@@ -175,10 +177,7 @@ class RankingPipeline:
                         config=self.config,
                     )
                 )
-            weighted = sum(
-                signal.value * weights.get(signal.name, 0.0)
-                for signal in signals
-            )
+            weighted = sum(signal.value * weights.get(signal.name, 0.0) for signal in signals)
             bm25_weighted = hit.score * weights.get("bm25", 0.0)
             ranked.append(
                 RankedHit(

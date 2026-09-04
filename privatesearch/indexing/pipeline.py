@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from collections.abc import Iterable
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable
 
 from privatesearch.crawler.crawler import CrawledPage, CrawlResult
 from privatesearch.document_processing.hashing import content_hash
@@ -47,9 +47,7 @@ class IndexingPipeline:
             except Exception as exc:  # noqa: BLE001 - never let a single page abort the pipeline
                 import logging
 
-                logging.getLogger(__name__).exception(
-                    "Failed to index page %s: %s", page.url, exc
-                )
+                logging.getLogger(__name__).exception("Failed to index page %s: %s", page.url, exc)
                 result.failed += 1
         return result
 

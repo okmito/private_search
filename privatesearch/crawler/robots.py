@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import io
 import re
-from dataclasses import dataclass, field
-from typing import Iterable
+from collections.abc import Iterable
+from dataclasses import dataclass
 from urllib.parse import urlparse
 from urllib.robotparser import RobotFileParser
 

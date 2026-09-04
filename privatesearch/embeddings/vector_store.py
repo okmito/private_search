@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import heapq
+from collections.abc import Iterable
 from dataclasses import dataclass
-from typing import Iterable
 
 from privatesearch.embeddings.base import EmbeddingVector, cosine_similarity
 

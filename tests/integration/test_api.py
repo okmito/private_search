@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import os
 import sys
 from pathlib import Path
 
@@ -119,7 +118,7 @@ def test_search_endpoint_paginates(client, seeded_index):
         links=[],
         language="en",
         published_at=None,
-        fetched_at=dt.datetime.now(dt.timezone.utc),
+        fetched_at=dt.datetime.now(dt.UTC),
         status=200,
         depth=0,
     )

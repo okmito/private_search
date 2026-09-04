@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from privatesearch.embeddings.base import cosine_similarity
 from privatesearch.embeddings.tfidf import TFIDFEmbedding
 from privatesearch.embeddings.vector_store import InMemoryVectorStore
@@ -63,7 +61,9 @@ def test_hybrid_search_combines_bm25_and_semantic() -> None:
     embedding = TFIDFEmbedding()
     embedding.fit([(doc_id, body) for doc_id, _, _, body in corpus])
 
-    hybrid = HybridSearch(index, embedding, config=HybridConfig(bm25_weight=1.0, semantic_weight=1.0))
+    hybrid = HybridSearch(
+        index, embedding, config=HybridConfig(bm25_weight=1.0, semantic_weight=1.0)
+    )
     hybrid.fit(corpus)
 
     hits = hybrid.search("apple fruit", limit=3)

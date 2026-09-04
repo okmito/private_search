@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Iterable
 
 from bs4 import BeautifulSoup, Tag
 
@@ -150,9 +149,7 @@ def extract_document(html: str, url: str) -> ExtractedDocument:
     )
     title = _extract_title(soup)
     description = (
-        _extract_meta(soup, "description")
-        or _extract_property(soup, "og:description")
-        or ""
+        _extract_meta(soup, "description") or _extract_property(soup, "og:description") or ""
     )
     body = _extract_main_text(soup)
     headings = _extract_headings(soup)

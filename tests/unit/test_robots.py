@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from privatesearch.crawler.robots import RobotsPolicy
 
-
 ROBOTS_BODY = """
 User-agent: *
 Disallow: /private/

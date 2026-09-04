@@ -25,10 +25,29 @@ from privatesearch.retrieval.bm25 import BM25
 
 def _generate_corpus(num_documents: int) -> list[tuple[int, str, str, str]]:
     vocabulary = [
-        "machine", "learning", "deep", "neural", "networks", "databases",
-        "relational", "sql", "tables", "python", "search", "engine",
-        "privacy", "crawler", "index", "ranking", "bm25", "vector",
-        "embedding", "hybrid", "fastapi", "nextjs", "typescript",
+        "machine",
+        "learning",
+        "deep",
+        "neural",
+        "networks",
+        "databases",
+        "relational",
+        "sql",
+        "tables",
+        "python",
+        "search",
+        "engine",
+        "privacy",
+        "crawler",
+        "index",
+        "ranking",
+        "bm25",
+        "vector",
+        "embedding",
+        "hybrid",
+        "fastapi",
+        "nextjs",
+        "typescript",
     ]
     documents = []
     for i in range(num_documents):

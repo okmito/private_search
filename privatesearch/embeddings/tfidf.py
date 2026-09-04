@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Iterable, Sequence
+from collections.abc import Sequence
 
 from privatesearch.document_processing.tokenizer import Tokenizer, default_tokenizer
 from privatesearch.embeddings.base import EmbeddingModel, EmbeddingVector

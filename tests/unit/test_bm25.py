@@ -60,14 +60,8 @@ def test_bm25_score_matches_textbook_formula() -> None:
     idf = math.log(((n - df + 0.5) / (df + 0.5)) + 1.0)
     dl_doc1 = index.document_length(1)
     dl_doc2 = index.document_length(2)
-    expected_doc1 = idf * (
-        (1 * (1.2 + 1))
-        / (1 + 1.2 * (1 - 0.75 + 0.75 * (dl_doc1 / avg_dl)))
-    )
-    expected_doc2 = idf * (
-        (1 * (1.2 + 1))
-        / (1 + 1.2 * (1 - 0.75 + 0.75 * (dl_doc2 / avg_dl)))
-    )
+    expected_doc1 = idf * ((1 * (1.2 + 1)) / (1 + 1.2 * (1 - 0.75 + 0.75 * (dl_doc1 / avg_dl))))
+    expected_doc2 = idf * ((1 * (1.2 + 1)) / (1 + 1.2 * (1 - 0.75 + 0.75 * (dl_doc2 / avg_dl))))
     scores = {hit.doc_id: hit.score for hit in hits}
     assert scores[1] == pytest.approx(expected_doc1, rel=1e-6)
     assert scores[2] == pytest.approx(expected_doc2, rel=1e-6)

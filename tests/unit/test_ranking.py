@@ -6,12 +6,10 @@ import math
 
 from privatesearch.indexing.inverted_index import InvertedIndex
 from privatesearch.ranking.pipeline import (
-    ExactTitleSignal,
     FreshnessSignal,
     QualitySignal,
     RankingConfig,
     RankingPipeline,
-    UrlRelevanceSignal,
 )
 
 

@@ -4,8 +4,8 @@ from privatesearch.document_processing.hashing import content_fingerprint, conte
 from privatesearch.document_processing.html import ExtractedDocument, extract_document
 from privatesearch.document_processing.tokenizer import (
     EnglishTokenizer,
-    TokenStream,
     Tokenizer,
+    TokenStream,
     default_tokenizer,
 )
 from privatesearch.document_processing.url_normalize import (

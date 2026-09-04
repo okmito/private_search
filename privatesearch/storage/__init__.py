@@ -12,9 +12,9 @@ from privatesearch.storage.engine import (
 from privatesearch.storage.models import (
     CrawlEvent,
     CrawlJob,
-    Domain,
     Document,
     DocumentLink,
+    Domain,
     IndexMetadata,
 )
 

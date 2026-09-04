@@ -4,9 +4,9 @@ import os
 import subprocess
 import sys
 import time
+import urllib.error
 import urllib.parse
 import urllib.request
-import urllib.error
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]

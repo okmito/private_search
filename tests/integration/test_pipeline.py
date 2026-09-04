@@ -3,21 +3,19 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import Awaitable, Callable
+from collections.abc import Awaitable, Callable
 
 import pytest
 
 from privatesearch.crawler.crawler import CrawlConfig, CrawledPage, Crawler
-from privatesearch.indexing.inverted_index import InvertedIndex
 from privatesearch.indexing.pipeline import IndexingPipeline, SearchService
 from privatesearch.storage.engine import close_engine, init_database
-from privatesearch.storage.models import Document
 
 FetchCallable = Callable[[str], Awaitable[tuple[int, str, dict[str, str]]]]
 
 
 def _fake_pages() -> list[CrawledPage]:
-    base = dt.datetime(2024, 1, 1, tzinfo=dt.timezone.utc)
+    base = dt.datetime(2024, 1, 1, tzinfo=dt.UTC)
     return [
         CrawledPage(
             url="https://example.com/intro",
@@ -220,7 +218,7 @@ def test_indexing_pipeline_updates_existing_documents() -> None:
         links=page.links,
         language=page.language,
         published_at=page.published_at,
-        fetched_at=dt.datetime.now(dt.timezone.utc),
+        fetched_at=dt.datetime.now(dt.UTC),
         status=page.status,
         depth=page.depth,
     )

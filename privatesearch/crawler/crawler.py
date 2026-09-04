@@ -6,8 +6,8 @@ import asyncio
 import datetime as dt
 import logging
 import time
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Awaitable, Callable, Iterable, Sequence
 
 import httpx
 
@@ -16,10 +16,8 @@ from privatesearch.crawler.frontier import Frontier, FrontierEntry
 from privatesearch.crawler.robots import RobotsPolicy
 from privatesearch.document_processing.html import ExtractedDocument, extract_document
 from privatesearch.document_processing.url_normalize import (
-    NormalizedUrl,
     is_blocked_host,
     normalize_url,
-    same_site,
 )
 
 __all__ = [
@@ -52,7 +50,7 @@ class CrawlConfig:
     respect_robots: bool = True
 
     @classmethod
-    def from_settings(cls, settings: Settings | None = None) -> "CrawlConfig":
+    def from_settings(cls, settings: Settings | None = None) -> CrawlConfig:
         settings = settings or get_settings()
         return cls(
             seed_urls=list(settings.crawler_allowed_domains),
@@ -97,7 +95,7 @@ class CrawledPage:
 
 @dataclass(slots=True)
 class CrawlStats:
-    started_at: dt.datetime = field(default_factory=lambda: dt.datetime.now(dt.timezone.utc))
+    started_at: dt.datetime = field(default_factory=lambda: dt.datetime.now(dt.UTC))
     finished_at: dt.datetime | None = None
     pages_fetched: int = 0
     pages_failed: int = 0
@@ -106,7 +104,7 @@ class CrawlStats:
 
     @property
     def duration_seconds(self) -> float:
-        end = self.finished_at or dt.datetime.now(dt.timezone.utc)
+        end = self.finished_at or dt.datetime.now(dt.UTC)
         return (end - self.started_at).total_seconds()
 
     @property
@@ -157,7 +155,7 @@ class Crawler:
         result = CrawlResult()
         if not self.config.seed_urls:
             logger.warning("Crawler has no seed URLs; returning empty result")
-            result.stats.finished_at = dt.datetime.now(dt.timezone.utc)
+            result.stats.finished_at = dt.datetime.now(dt.UTC)
             return result
 
         allowed_hosts = {h.lower() for h in self.config.allowed_domains}
@@ -203,7 +201,7 @@ class Crawler:
             if self._owns_client and self._client is not None:
                 await self._client.aclose()
 
-        result.stats.finished_at = dt.datetime.now(dt.timezone.utc)
+        result.stats.finished_at = dt.datetime.now(dt.UTC)
         return result
 
     # ------------------------------------------------------------------
@@ -258,7 +256,7 @@ class Crawler:
                 links=list(extracted.links),
                 language=extracted.language,
                 published_at=extracted.published_at,
-                fetched_at=dt.datetime.now(dt.timezone.utc),
+                fetched_at=dt.datetime.now(dt.UTC),
                 status=http_status,
                 depth=entry.priority,
             )

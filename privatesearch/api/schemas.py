@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-from typing import Optional
-
 from pydantic import BaseModel, Field
 
 
@@ -15,7 +13,7 @@ class SearchHit(BaseModel):
     snippet: str
     highlighted: str
     matched_terms: list[str] = Field(default_factory=list)
-    explanation: Optional[dict[str, float]] = None
+    explanation: dict[str, float] | None = None
 
 
 class SearchResponse(BaseModel):
@@ -32,11 +30,11 @@ class DocumentSummary(BaseModel):
     canonical_url: str
     title: str
     description: str
-    language: Optional[str] = None
+    language: str | None = None
     content_hash: str
     body_length: int
     title_length: int
-    last_crawled_at: Optional[str] = None
+    last_crawled_at: str | None = None
 
 
 class DocumentDetail(DocumentSummary):

@@ -14,9 +14,9 @@ sufficient for the V1 portfolio goals (10k–100k documents per shard).
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from collections.abc import Iterable, Iterator
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Iterable, Iterator
 
 from privatesearch.document_processing.tokenizer import Tokenizer, default_tokenizer
 
@@ -39,7 +39,7 @@ class Posting:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, object]) -> "Posting":
+    def from_dict(cls, data: dict[str, object]) -> Posting:
         return cls(
             doc_id=int(data["doc_id"]),
             term_frequency=int(data["tf"]),
@@ -70,7 +70,7 @@ class DocumentField:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, object]) -> "DocumentField":
+    def from_dict(cls, data: dict[str, object]) -> DocumentField:
         return cls(
             doc_id=int(data["doc_id"]),
             doc_length=int(data["doc_length"]),
@@ -120,7 +120,7 @@ class IndexSnapshot:
         )
 
     @classmethod
-    def from_json(cls, raw: str) -> "IndexSnapshot":
+    def from_json(cls, raw: str) -> IndexSnapshot:
         data = json.loads(raw)
         return cls(
             stats=IndexStats(**data["stats"]),  # type: ignore[arg-type]
@@ -263,7 +263,7 @@ class InvertedIndex:
         return path
 
     @classmethod
-    def load_snapshot(cls, path: str | Path, tokenizer: Tokenizer | None = None) -> "InvertedIndex":
+    def load_snapshot(cls, path: str | Path, tokenizer: Tokenizer | None = None) -> InvertedIndex:
         path = Path(path)
         snapshot = IndexSnapshot.from_json(path.read_text(encoding="utf-8"))
         index = cls(tokenizer=tokenizer)
