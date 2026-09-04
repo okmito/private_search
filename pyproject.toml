@@ -149,6 +149,8 @@ ignore = [
     "TRY401", # redundant exception in log.exception (we want page.url + exc)
     "TRY300", # else block for try/except - intentionally early return
     "F401", # unused os in tests/integration/__init__.py - kept for parity
+    "E402", # import not at top (seed_demo sys.path hack)
+    "E501", # line too long in demo corpus strings - acceptable
 ]
 
 [tool.ruff.lint.per-file-ignores]

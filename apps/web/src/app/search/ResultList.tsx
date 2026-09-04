@@ -42,12 +42,25 @@ export default function ResultList({ results, query }: ResultListProps) {
   };
 
   if (data.results.length === 0) {
+    const quick = ["youtube", "machine learning", "cooking", "python", "vector search", "example"];
     return (
       <div className="empty-state">
         <h2>No results for “{data.query}”</h2>
         <p>
-          Try different keywords, check your spelling or expand your index by
-          crawling more pages.
+          Your index has {data.total === 0 ? "no matches" : `${data.total} total matches`} for this query.
+          PrivateSearch only searches pages you crawled/seeded (privacy).
+        </p>
+        <p>
+          Try:{" "}
+          {quick.map((q) => (
+            <button key={q} type="button" className="suggestion" onClick={() => searchDocuments({ query: q, page: 1, limit: data.page_size }).then(setData).catch(() => {})} style={{ marginRight: 6 }}>
+              {q}
+            </button>
+          ))}
+        </p>
+        <p style={{ fontSize: "0.85rem", color: "var(--fg-muted)" }}>
+          No hits at all? Run <code>python scripts/seed_demo.py</code> then{" "}
+          <code>curl http://localhost:8000/api/v1/index/rebuild</code> and search again.
         </p>
       </div>
     );
