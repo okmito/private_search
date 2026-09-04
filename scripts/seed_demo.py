@@ -94,13 +94,13 @@ def _demo_pages() -> list[CrawledPage]:
         (
             "https://example.com/music-theory",
             "Music Theory for Beginners",
-            "Music theory covers scales, chords and rhythm for youtube covers and live performance.",
+            "Music theory covers scales, chords and rhythm for guitar covers and live performance.",
         ),
         (
             "https://example.com/privacy-search",
-            "Private Search vs YouTube Tracking",
-            "PrivateSearch avoids youtube tracking and third-party analytics. Self-hosted "
-            "search keeps queries private unlike youtube recommendations.",
+            "Private Search vs Tracking",
+            "PrivateSearch avoids third-party analytics and cross-site tracking. Self-hosted "
+            "search keeps queries private unlike ad-driven recommendations.",
         ),
         (
             "https://example.com/crawler",
@@ -128,8 +128,8 @@ def _demo_pages() -> list[CrawledPage]:
         (
             "https://example.com/hybrid",
             "Hybrid Search: BM25 + Vectors",
-            "Hybrid search combines lexical BM25 and semantic vector similarity for youtube "
-            "and other queries, evaluated with Precision, Recall, MRR and nDCG.",
+            "Hybrid search combines lexical BM25 and semantic vector similarity for diverse "
+            "queries, evaluated with Precision, Recall, MRR and nDCG.",
         ),
     ]
     pages: list[CrawledPage] = []

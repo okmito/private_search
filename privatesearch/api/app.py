@@ -25,6 +25,7 @@ from privatesearch.api.schemas import (
 )
 from privatesearch.common.config import get_settings
 from privatesearch.embeddings.tfidf import TFIDFEmbedding
+from privatesearch.ranking.pipeline import RankingConfig, RankingPipeline
 from privatesearch.retrieval.hybrid import HybridConfig, HybridSearch
 from privatesearch.retrieval.retriever import Retriever
 from privatesearch.retrieval.snippets import build_snippet
@@ -173,35 +174,34 @@ def _register_routes(app: FastAPI) -> None:
         if len(q) > get_settings().api_max_query_length:
             raise HTTPException(status_code=400, detail="Query too long")
         service = get_search_service()
-        retriever = Retriever(service.index, k1=get_settings().bm25_k1, b=get_settings().bm25_b)
+        # Use ranking pipeline so title/URL signals boost exact matches
+        ranking = RankingPipeline(config=RankingConfig(), tokenizer=service.index.tokenizer)
         offset = (page - 1) * limit
-        results = retriever.search(q, limit=limit, offset=offset, documents=None)
+        ranked = ranking.rank(q, index=service.index, limit=limit, offset=offset)
+        # total via plain BM25 count for pagination
+        retriever = Retriever(service.index, k1=get_settings().bm25_k1, b=get_settings().bm25_b)
         total = retriever.count(q)
 
         hits: list[SearchHit] = []
-        for result in results:
-            doc_field = service.index.document(result.doc_id)
+        for hit in ranked:
+            doc_field = service.index.document(hit.doc_id)
             body = doc_field.title if doc_field else ""
             snippet = build_snippet(
                 body,
-                query_terms=list(result.matched_terms),
-                tokenizer=retriever.tokenizer,
-                max_length=retriever.snippet_max_length,
+                query_terms=list(hit.matched_terms),
+                tokenizer=service.index.tokenizer,
+                max_length=240,
             )
-            explanation: dict[str, float] = {
-                "bm25": float(result.score),
-                "title_length": float(doc_field.title_length if doc_field else 0),
-            }
             hits.append(
                 SearchHit(
-                    doc_id=result.doc_id,
-                    score=result.score,
-                    title=result.title,
-                    url=result.url,
+                    doc_id=hit.doc_id,
+                    score=hit.final_score,
+                    title=doc_field.title if doc_field else "",
+                    url=doc_field.url if doc_field else "",
                     snippet=snippet.text,
                     highlighted=snippet.highlighted,
-                    matched_terms=list(result.matched_terms),
-                    explanation=explanation,
+                    matched_terms=list(hit.matched_terms),
+                    explanation=hit.explanation(),
                 )
             )
         return SearchResponse(
